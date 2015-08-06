@@ -16,6 +16,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.RepaintManager;
+import javax.swing.plaf.synth.SynthSeparatorUI;
 
 
 public class DanceBot {
@@ -76,7 +77,7 @@ public class DanceBot {
 			if(dp.map.playerTile!=null)break;
 		}
 
-
+		time=System.currentTimeMillis();
 		while(true){
 			roboCycle();
 		}
@@ -94,9 +95,11 @@ public class DanceBot {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-
+		time=System.currentTimeMillis();
 		BufferedImage image = capture();
+		s+=("Capture "+getTime()+"||");
 		dp.setImage(image);
+		
 		s+=("Set Image "+getTime()+"||");
 		int key = dp.map.chooseDirection();
 		s+="Choose direction "+getTime()+"||";
@@ -107,7 +110,7 @@ public class DanceBot {
 			int location=getBarPosition(image);
 			
 			float pixelsToGo=width/2-location;
-			toWait=(long) (pixelsToGo/speed-80);
+			toWait=(long) (pixelsToGo/speed-30);
 			if(location==-99){
 				toWait=previousWait;
 			}
@@ -135,6 +138,7 @@ public class DanceBot {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		s+="PostWait "+getTime();
 //		System.out.println(s);
 	}
 
@@ -146,7 +150,7 @@ public class DanceBot {
 	}
 
 	private static float calibrate() {
-		float[] calibrations= new float[20];
+		float[] calibrations= new float[10];
 		int calibrationIndex=0;
 		long calibrationTime;
 		int location=0;
@@ -180,7 +184,7 @@ public class DanceBot {
 				return speed;
 			}
 			try {
-				Thread.sleep(100);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -192,10 +196,9 @@ public class DanceBot {
 	}
 
 	static int getBarPosition(BufferedImage image){
-		for(int x=width/2;x>=0;x--){
+		for(int x=width/2-50;x>=0;x--){
 			int rgb = image.getRGB(x, 502);
-			Color c = new Color(rgb);
-			if(c.getBlue()==255||c.getBlue()==189){
+			if(rgb==0xff00bd8e||rgb==0xff00ffbf||rgb==0xffff0000||rgb==0xffbd0000){
 				return x;
 			}
 		}
